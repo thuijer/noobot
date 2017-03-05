@@ -59,7 +59,7 @@ namespace Noobot.Core.DependencyResolution
             var registry = new Registry();
 
             // setups DI for everything in Noobot.Core
-            registry.Scan(x =>
+            registry.Scan( x =>
             {
                 x.TheCallingAssembly();
                 x.WithDefaultConventions();

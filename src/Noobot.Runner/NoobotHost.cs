@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using Common.Logging;
 using Noobot.Core;
 using Noobot.Core.Configuration;
@@ -23,7 +23,7 @@ namespace Noobot.Runner
 
         public void Start()
         {
-            IContainerFactory containerFactory = new ContainerFactory(new ConfigurationBase(), _configReader, _logger);
+            IContainerFactory containerFactory = new ContainerFactory(new Config(), _configReader, _logger);
             INoobotContainer container = containerFactory.CreateContainer();
             _noobotCore = container.GetNoobotCore();
 

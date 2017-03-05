@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Noobot.Runner</RootNamespace>
     <AssemblyName>Noobot.Runner</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -67,6 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config.cs" />
     <Compile Include="Configuration\ConfigReader.cs" />
     <Compile Include="NoobotHost.cs" />
     <Compile Include="Program.cs" />
@@ -74,13 +75,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Configuration\config.default.json" />
     <None Include="Configuration\config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Noobot.Octopus\Noobot.Octopus.csproj">
+      <Project>{e4ef484e-1315-448d-a618-b3081da8d9b1}</Project>
+      <Name>Noobot.Octopus</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Noobot.Core\Noobot.Core.csproj">
       <Project>{20c88122-7ba3-4380-89fc-350f9d5b94dc}</Project>
       <Name>Noobot.Core</Name>

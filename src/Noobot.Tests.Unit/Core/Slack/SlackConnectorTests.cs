@@ -3,6 +3,7 @@ using Noobot.Core.Logging;
 using Noobot.Runner.Configuration;
 using Noobot.Tests.Unit.Stubs.MessagingPipeline;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace Noobot.Tests.Unit.Core.Slack
 {
@@ -10,7 +11,7 @@ namespace Noobot.Tests.Unit.Core.Slack
     public class SlackConnectorTests
     {
         [Test]
-        public void should_connect_as_expected()
+        public Task should_connect_as_expected()
         {
             // given
             var configReader = new ConfigReader();
@@ -18,9 +19,8 @@ namespace Noobot.Tests.Unit.Core.Slack
             var connector = new NoobotCore(configReader, new EmptyLogger(), containerStub);
 
             // when
-            var task = connector.Connect();
-            task.Wait();
-
+            return connector.Connect();
+           
             // then
 
         }

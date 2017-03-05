@@ -14,6 +14,18 @@ namespace Noobot.Runner.Configuration
             return jObject.Value<string>("slack:apiToken");
         }
 
+        public string OctopusApiKey()
+        {
+            JObject jObject = GetJObject();
+            return jObject.Value<string>("octopus:apiKey");
+        }
+
+        public string OctopusApiUrl()
+        {
+            JObject jObject = GetJObject();
+            return jObject.Value<string>("octopus:apiUrl");
+        }
+
         public bool HelpEnabled()
         {
             return true;
