@@ -9,13 +9,15 @@ namespace Noobot.Octopus
     class OctopusVersion
     {
         private Dictionary<string, string> tenants;
+        private Dictionary<string, string> environments;
         private OctopusServerEndpoint endpoint;
         private OctopusRepository repository;
 
-        public OctopusVersion(string url, string apiKey, Dictionary<string, string> tenants)
+        public OctopusVersion(string url, string apiKey, Dictionary<string, string> environments, Dictionary<string, string> tenants)
         {
             endpoint = new OctopusServerEndpoint(url, apiKey);
             repository = new OctopusRepository(endpoint);
+            this.environments = environments;
             this.tenants = tenants;
         }
         public IEnumerable<string> Get(string argument)
@@ -51,22 +53,13 @@ namespace Noobot.Octopus
                 }
             };
         }
-        private string GetEnvironmentName(string argument)
+
+        private string GetEnvironmentName(string environmentAlias)
         {
-            switch (argument.ToLower())
-            {
-                case "intacp":
-                case "ia":
-                case "acp1": return "Interne Acceptatie";
-                case "extacp":
-                case "ea":
-                case "acp": return "Externe Acceptatie";
-                case "prod":
-                case "prd":
-                case "pd": return "Productie";
-                default: return "";
-            }
+            string result = "";
+            return environments.TryGetValue(environmentAlias, out result) ? result : result;
         }
+
         private IEnumerable<string> WriteAllProjectDeployments()
         {
             foreach(ProjectResource p in repository.Projects.FindAll())
@@ -74,7 +67,6 @@ namespace Noobot.Octopus
                 foreach( string s in WriteLastProjectDeployment(p))
                     yield return s;
             }
-
         }
 
         private void InitializeCollections()
@@ -157,6 +149,7 @@ namespace Noobot.Octopus
         }
 
         private IEnumerable<TaskResource> _tasks = null;
+
         public IEnumerable<TaskResource> GetTasks()
         {
             return _tasks = _tasks ?? repository.Tasks.FindAll();

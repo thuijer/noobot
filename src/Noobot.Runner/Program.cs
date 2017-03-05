@@ -32,8 +32,8 @@ namespace Noobot.Runner
                 });
 
                 x.RunAsNetworkService();
-                x.SetDisplayName("Noobot");
-                x.SetServiceName("Noobot");
+                x.SetDisplayName("Noob");
+                x.SetServiceName("Noob");
                 x.SetDescription("An extensible Slackbot built in C#");
             });
         }

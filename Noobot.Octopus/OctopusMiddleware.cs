@@ -10,17 +10,16 @@ namespace Noobot.Octopus
 {
     public class OctopusMiddleware : MiddlewareBase
     {
-        private string url;
-        private string apiKey;
-        private Dictionary<string, string> tenants;
         private OctopusVersion octopusVersion;
 
         public OctopusMiddleware(IMiddleware next, IConfigReader reader) : base(next)
         {
-            url = reader.GetConfigEntry<string>("octopus:apiUrl");
-            apiKey = reader.GetConfigEntry<string>("octopus:apiKey");
-            tenants = reader.GetConfigDictionary("octopus:tenants");
-            octopusVersion = new OctopusVersion(url, apiKey, tenants);
+            var url = reader.GetConfigEntry<string>("octopus:apiUrl");
+            var apiKey = reader.GetConfigEntry<string>("octopus:apiKey");
+            var environments = reader.GetConfigDictionary("octopus:environments");
+            var tenants = reader.GetConfigDictionary("octopus:tenants");
+
+            octopusVersion = new OctopusVersion(url, apiKey, environments, tenants);
             HandlerMappings = new[]
             {
                 new HandlerMapping
