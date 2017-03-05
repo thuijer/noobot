@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Newtonsoft.Json.Linq;
@@ -57,6 +59,13 @@ namespace Noobot.Runner.Configuration
             var codebase = new Uri(assembly.CodeBase);
             var path = Path.GetDirectoryName(codebase.LocalPath);
             return path;
+        }
+
+        public Dictionary<string, string> GetConfigDictionary(string entryName)
+        {
+            JObject jObject = GetJObject();
+            var jsonDict = jObject.Value<IDictionary<string, JToken>>(entryName);
+            return jsonDict.ToDictionary(pair => pair.Key, pair => (string)pair.Value);
         }
     }
 }

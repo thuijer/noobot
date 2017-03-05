@@ -3,19 +3,20 @@ using Octopus.Client;
 using Octopus.Client.Model;
 using System;
 using System.Collections.Generic;
-using static Octopus.Client.Model.TenantVariableResource;
 
 namespace Noobot.Octopus
 {
     class OctopusVersion
     {
+        private Dictionary<string, string> tenants;
         private OctopusServerEndpoint endpoint;
         private OctopusRepository repository;
 
-        public OctopusVersion(string octopusUrl, string octopusApiKey)
+        public OctopusVersion(string url, string apiKey, Dictionary<string, string> tenants)
         {
-            endpoint = new OctopusServerEndpoint(octopusUrl, octopusApiKey);
+            endpoint = new OctopusServerEndpoint(url, apiKey);
             repository = new OctopusRepository(endpoint);
+            this.tenants = tenants;
         }
         public IEnumerable<string> Get(string argument)
         {
@@ -30,13 +31,15 @@ namespace Noobot.Octopus
                     return WriteDeploymentsForEnvironment(env);
             }
             else
-                return WriteLastProjectDeploymentForTenant(GetTenantDisplayName(tenantName), tenantName);
+                return WriteLastProjectDeploymentForTenant(tenantName);
         }
 
-        private string GetTenantDisplayName(string tenantName)
+        private string GetTenantName(string aliasTenantName)
         {
-            return tenantName.Replace("-tenant", "");
+            string result = "";
+            return tenants.TryGetValue(aliasTenantName, out result) ? result : result;
         }
+
         private IEnumerable<string> WriteDeploymentsForEnvironment(string env)
         {
             yield return("Deployments on " + env);
@@ -74,32 +77,6 @@ namespace Noobot.Octopus
 
         }
 
-        private string GetTenantName(string tenantName)
-        {
-            switch (tenantName.ToLower())
-            {
-                case "npo1":
-                case "npo2":
-                case "npo3": return tenantName.ToUpper() + "-tenant";
-                case "intdev1":
-                case "1":
-                    return "InternDevelopment1-tenant";
-                case "intdev2":
-                case "2":
-                    return "InternDevelopment2-tenant";
-                case "intdev3":
-                case "3":
-                    return "InternDevelopment3-tenant";
-                case "intdev4":
-                case "4":
-                    return "InternDevelopment4-tenant";
-                case "intdev5":
-                case "5":
-                    return "InternDevelopment5-tenant";
-                default: return "";
-            }
-        }
-
         private void InitializeCollections()
         {
             GetDeployments();
@@ -117,9 +94,9 @@ namespace Noobot.Octopus
             }
         }
 
-        private IEnumerable<string> WriteLastProjectDeploymentForTenant(string displayName, string tenantName)
+        private IEnumerable<string> WriteLastProjectDeploymentForTenant(string tenantName)
         {
-            yield return("Deployments on " + displayName);
+            yield return("Deployments on " + tenantName);
             string tenantId = GetTenantByName(tenantName).Id;
             foreach( ProjectResource p in repository.Projects.FindAll())
             {

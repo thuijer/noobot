@@ -1,4 +1,6 @@
-﻿namespace Noobot.Core.Configuration
+﻿using System.Collections.Generic;
+
+namespace Noobot.Core.Configuration
 {
     /// <summary>
     /// A config reader is required to be supplied. This will probably vary by application so you will need to implement this.
@@ -19,5 +21,8 @@
         /// Should return any other configuration values you need within your middleware/plugins.
         /// </summary>
         T GetConfigEntry<T>(string entryName);
+
+        Dictionary<string, string> GetConfigDictionary(string entryName);
+
     }
 }

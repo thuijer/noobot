@@ -10,14 +10,17 @@ namespace Noobot.Octopus
 {
     public class OctopusMiddleware : MiddlewareBase
     {
-        private string octopusUrl;
-        private string octopusApiKey;
+        private string url;
+        private string apiKey;
+        private Dictionary<string, string> tenants;
         private OctopusVersion octopusVersion;
+
         public OctopusMiddleware(IMiddleware next, IConfigReader reader) : base(next)
         {
-            octopusUrl = reader.GetConfigEntry<string>("octopus:apiUrl");
-            octopusApiKey = reader.GetConfigEntry<string>("octopus:apiKey");
-            octopusVersion = new OctopusVersion(octopusUrl, octopusApiKey);
+            url = reader.GetConfigEntry<string>("octopus:apiUrl");
+            apiKey = reader.GetConfigEntry<string>("octopus:apiKey");
+            tenants = reader.GetConfigDictionary("octopus:tenants");
+            octopusVersion = new OctopusVersion(url, apiKey, tenants);
             HandlerMappings = new[]
             {
                 new HandlerMapping
@@ -31,11 +34,13 @@ namespace Noobot.Octopus
 
         private IEnumerable<ResponseMessage> VersionHandler(IncomingMessage message, string matchedHandle)
         {
-            yield return message.ReplyDirectlyToUser("Hold on, I'm asking Octopus");
-            StringBuilder builder = new StringBuilder();
-            foreach (string s in octopusVersion.Get(""))
-                builder.AppendLine(s);
+            yield return message.ReplyDirectlyToUser($"Hold on {message.Username}, I'm asking Octopus");
 
+            var argument = message.TargetedText.Substring(matchedHandle.Length).Trim();
+            StringBuilder builder = new StringBuilder("```");
+            foreach (string s in octopusVersion.Get(argument)) 
+                builder.AppendLine(s);
+            builder.Append("```");
             yield return message.ReplyDirectlyToUser(builder.ToString());
         }
     }
